@@ -21,6 +21,7 @@ def npatlasproxy():
     smiles = request.args.get('smiles', '')
 
     inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+    acceptable_key = set([inchikey, inchikey_from_smiles, inchikey_from_inchi])
 
     NPAID = None
 
