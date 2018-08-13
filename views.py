@@ -20,20 +20,23 @@ def npatlasproxy():
     inchikey = request.args.get('inchikey', '')
     smiles = request.args.get('smiles', '')
 
-    #TODO finish this by converting to INCHI KEY and then compare them all
+    inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
 
     NPAID = None
 
     for npatlas_entry in npatlas_list:
-        if npatlas_entry["InChI"] == inchi:
+        if len(npatlas_entry["InChIKey"]) > 2 and npatlas_entry["InChIKey"] in acceptable_key:
             NPAID = npatlas_entry["NPAID"]
             break
-        if npatlas_entry["SMILES"] == inchikey:
-            NPAID = npatlas_entry["NPAID"]
-            break
-        if npatlas_entry["InChIKey"] == smiles:
-            NPAID = npatlas_entry["NPAID"]
-            break
+        # if npatlas_entry["InChI"] == inchi:
+        #     NPAID = npatlas_entry["NPAID"]
+        #     break
+        # if npatlas_entry["SMILES"] == inchikey:
+        #     NPAID = npatlas_entry["NPAID"]
+        #     break
+        # if npatlas_entry["InChIKey"] == smiles:
+        #     NPAID = npatlas_entry["NPAID"]
+        #     break
 
     if NPAID == None:
         return render_template("notfound.html")
