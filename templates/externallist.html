@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>GNPS - NPAtlas Proxy</title>
+    <title>GNPS - External Proxy</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-sm"></div>
             <div class="col-sm text-center">
-                <h2>GNPS - NPAtlas Proxy</h2>
+                <h2>GNPS - External Proxy</h2>
             </div>
             <div class="col-sm"></div>
         </div>
@@ -34,7 +34,7 @@
         <hr>
 
         <div class="col-sm text-center">
-            <h2>GNPS Library MS/MS Spectra</h2>
+            <h2>GNPS External Resource Links</h2>
         </div>
 
         <div style="">
@@ -42,18 +42,18 @@
                 <thead>
                   <tr>
                     <th>
-                        Compound Name
+                        Resource
                     </th>
                     <th>
-                        GNPS Library Link
+                        External Link
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="spectrum in spectrumlist">
-                        <td>{{spectrum.Name}}</td>
+                    <tr v-for="external_link in external_links">
+                        <td>{{external_link.resource}}</td>
                         <td>
-                            <gnps-linkout :url=spectrum.url :spectrumid=spectrum.spectrum_id></gnps-linkout>
+                            <gnps-linkout :url=external_link.url :resource=external_link.resource></gnps-linkout>
                         </td>
                     </tr>
                 </tbody>
@@ -64,19 +64,19 @@
     <script>
 
     Vue.component('gnps-linkout', {
-            props: ['spectrumid', 'url'],
+            props: ['resource', 'url'],
             data: function() {
                 return {}
             },
             methods: {},
-            template: '<a :href=url>{{ spectrumid }}</a>'
+            template: '<a :href=url>{{ resource }}</a>'
         })
 
     var app4 = new Vue({
         el: '#app-4',
         methods: {},
         data: {
-            spectrumlist : ((spectrumlist_json|tojson))
+            external_links : ((external_links_json|tojson))
         }
     })
     </script>

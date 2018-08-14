@@ -6,9 +6,12 @@ from app import app
 import json
 import csv
 import requests
+import requests_cache
 from indigo import *
 from indigo_renderer import *
 from indigo_inchi import *
+
+requests_cache.install_cache('demo_cache')
 
 @app.route('/', methods=['GET'])
 def homepage():
@@ -29,15 +32,6 @@ def npatlasproxy():
         if len(npatlas_entry["InChIKey"]) > 2 and npatlas_entry["InChIKey"] in acceptable_key:
             NPAID = npatlas_entry["NPAID"]
             break
-        # if npatlas_entry["InChI"] == inchi:
-        #     NPAID = npatlas_entry["NPAID"]
-        #     break
-        # if npatlas_entry["SMILES"] == inchikey:
-        #     NPAID = npatlas_entry["NPAID"]
-        #     break
-        # if npatlas_entry["InChIKey"] == smiles:
-        #     NPAID = npatlas_entry["NPAID"]
-        #     break
 
     if NPAID == None:
         return render_template("notfound.html")
@@ -68,6 +62,55 @@ def gnpsproxy():
     return render_template('gnpsspectralist.html', spectrumlist_json=found_spectrum_list)
     #return json.dumps(found_spectrum_list)
 
+def prep_external(results_list, resource_name, resource_url):
+    external_links = []
+
+    for result in results_list:
+        external_obj = {}
+        external_obj["resource"] = resource_name
+        external_obj["url"] = resource_url % (result)
+
+        external_links.append(external_obj)
+
+    return external_links
+
+@app.route('/structureproxy', methods=['GET'])
+def structureproxy():
+    inchi = request.args.get('inchi', '')
+    inchikey = request.args.get('inchikey', '')
+    smiles = request.args.get('smiles', '')
+
+    inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+
+    inchikey_query = ""
+
+    if len(inchikey) > 2:
+        inchikey_query = inchikey
+    elif len(inchikey_from_smiles) > 2:
+        inchikey_query = inchikey_from_smiles
+    elif len(inchikey_from_inchi) > 2:
+        inchikey_query = inchikey_from_inchi
+
+    print(inchikey_query)
+
+    kegg_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/KEGG/%s" % (inchikey_query)).json()
+    CHEBI_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/CHEBI/%s" % (inchikey_query)).json()
+    BioCyc_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/BioCyc/%s" % (inchikey_query)).json()
+    pubchem_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/Pubchem CID/%s" % (inchikey_query)).json()
+    ChemSpider_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/ChemSpider/%s" % (inchikey_query)).json()
+    LipidMaps_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/LipidMaps/%s" % (inchikey_query)).json()
+    DrugBank_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/DrugBank/%s" % (inchikey_query)).json()
+
+    external_links = []
+    external_links += prep_external(kegg_info[0]["result"], "KEGG", "https://www.genome.jp/dbget-bin/www_bget?%s")
+    external_links += prep_external(CHEBI_info[0]["result"], "CHEBI", "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=%s")
+    external_links += prep_external(BioCyc_info[0]["result"], "BioCyc", "https://biocyc.org/compound?orgid=META&id=%s")
+    external_links += prep_external(pubchem_info[0]["result"], "Pubchem", "https://pubchem.ncbi.nlm.nih.gov/compound/%s")
+    external_links += prep_external(ChemSpider_info[0]["result"], "Chem Spider", "http://www.chemspider.com/Chemical-Structure.%s.html")
+    external_links += prep_external(LipidMaps_info[0]["result"], "Lipid Maps", "http://lipidmaps.org/data/LMSDRecord.php?LMID=%s")
+    external_links += prep_external(DrugBank_info[0]["result"], "Drugbank", "https://www.drugbank.ca/drugs/%s")
+
+    return render_template('externallist.html', external_links_json=external_links)
 
 @app.route('/heartbeat', methods=['GET'])
 def heartbeat():
@@ -89,13 +132,8 @@ def get_inchikey(smiles, inchi):
     except:
         inchikey_from_inchi = ""
 
-    #print(inchikey_from_smiles, inchikey_from_inchi, smiles, inchi)
-
     if len(inchikey_from_smiles) > 2 and len(inchikey_from_inchi) > 2:
         return inchikey_from_smiles, inchikey_from_inchi
-        #if inchikey_from_smiles != inchikey_from_inchi:
-        #    print(smiles, inchi)
-            #print(inchikey_from_smiles, inchikey_from_inchi)
 
     if len(inchikey_from_smiles) > 2:
         return inchikey_from_smiles, ""
@@ -115,12 +153,17 @@ def load_NPAtlas(filepath):
     return all_npatlas
 
 def load_GNPS():
-    #url = "https://gnps.ucsd.edu/ProteoSAFe/LibraryServlet?library=all"
-    url = "https://gnps.ucsd.edu/ProteoSAFe/LibraryServlet?library=GNPS-LIBRARY"
-    all_GNPS = requests.get(url).json()
-    all_spectra = []
+    library_names = ["all", "MASSBANK", "MASSBANKEU", "MONA", "RESPECT", "HMDB", "CASMI"]
 
-    for spectrum in all_GNPS["spectra"]:
+    all_GNPS_list = []
+
+    for library_name in library_names:
+        print(library_name)
+        url = "https://gnps.ucsd.edu/ProteoSAFe/LibraryServlet?library=%s" % (library_name)
+        all_GNPS_list += requests.get(url).json()["spectra"]
+
+    all_spectra = []
+    for spectrum in all_GNPS_list:
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
         inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
@@ -132,6 +175,7 @@ def load_GNPS():
         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
         spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
+        spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]
 
         all_spectra.append(spectrum_object)
 
