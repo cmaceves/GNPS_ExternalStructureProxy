@@ -24,12 +24,12 @@ def npatlasproxy():
     smiles = request.args.get('smiles', '')
 
     inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
-    acceptable_key = set([inchikey, inchikey_from_smiles, inchikey_from_inchi])
+    acceptable_key = set([inchikey.split("-")[0], inchikey_from_smiles.split("-")[0], inchikey_from_inchi.split("-")[0]])
 
     NPAID = None
 
     for npatlas_entry in npatlas_list:
-        if len(npatlas_entry["InChIKey"]) > 2 and npatlas_entry["InChIKey"] in acceptable_key:
+        if len(npatlas_entry["InChIKey"]) > 2 and npatlas_entry["InChIKey"].split("-")[0] in acceptable_key:
             NPAID = npatlas_entry["NPAID"]
             break
 
