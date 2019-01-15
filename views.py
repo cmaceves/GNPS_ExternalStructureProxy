@@ -84,11 +84,14 @@ def structureproxy():
 
     inchikey_query = ""
 
-    if len(inchikey) > 2:
+
+    MIN_LENGTH = 5
+
+    if len(inchikey) > MIN_LENGTH:
         inchikey_query = inchikey
-    elif len(inchikey_from_smiles) > 2:
+    elif len(inchikey_from_smiles) > MIN_LENGHT:
         inchikey_query = inchikey_from_smiles
-    elif len(inchikey_from_inchi) > 2:
+    elif len(inchikey_from_inchi) > MIN_LENGTH:
         inchikey_query = inchikey_from_inchi
 
     print(inchikey_query)
@@ -184,5 +187,6 @@ def load_GNPS():
 indigo = Indigo()
 indigo_inchi = IndigoInchi(indigo)
 
-gnps_list = load_GNPS()
+#gnps_list = load_GNPS()
+gnps_list = []
 npatlas_list = load_NPAtlas("data/NPAtlas_DB_last_version.tsv")
