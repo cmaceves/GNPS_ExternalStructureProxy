@@ -12,4 +12,5 @@ RUN pip install gunicorn
 RUN apt-get update -y
 
 COPY . /app
+RUN chmod +x /app/run_server.sh
 WORKDIR /app

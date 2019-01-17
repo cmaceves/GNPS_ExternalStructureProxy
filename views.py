@@ -89,7 +89,7 @@ def structureproxy():
 
     if len(inchikey) > MIN_LENGTH:
         inchikey_query = inchikey
-    elif len(inchikey_from_smiles) > MIN_LENGHT:
+    elif len(inchikey_from_smiles) > MIN_LENGTH:
         inchikey_query = inchikey_from_smiles
     elif len(inchikey_from_inchi) > MIN_LENGTH:
         inchikey_query = inchikey_from_inchi
@@ -104,14 +104,16 @@ def structureproxy():
     LipidMaps_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/LipidMaps/%s" % (inchikey_query)).json()
     DrugBank_info = requests.get("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/DrugBank/%s" % (inchikey_query)).json()
 
+    print(pubchem_info)
+
     external_links = []
-    external_links += prep_external(kegg_info[0]["result"], "KEGG", "https://www.genome.jp/dbget-bin/www_bget?%s")
-    external_links += prep_external(CHEBI_info[0]["result"], "CHEBI", "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=%s")
-    external_links += prep_external(BioCyc_info[0]["result"], "BioCyc", "https://biocyc.org/compound?orgid=META&id=%s")
-    external_links += prep_external(pubchem_info[0]["result"], "Pubchem", "https://pubchem.ncbi.nlm.nih.gov/compound/%s")
-    external_links += prep_external(ChemSpider_info[0]["result"], "Chem Spider", "http://www.chemspider.com/Chemical-Structure.%s.html")
-    external_links += prep_external(LipidMaps_info[0]["result"], "Lipid Maps", "http://lipidmaps.org/data/LMSDRecord.php?LMID=%s")
-    external_links += prep_external(DrugBank_info[0]["result"], "Drugbank", "https://www.drugbank.ca/drugs/%s")
+    external_links += prep_external(kegg_info[0]["results"], "KEGG", "https://www.genome.jp/dbget-bin/www_bget?%s")
+    external_links += prep_external(CHEBI_info[0]["results"], "CHEBI", "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=%s")
+    external_links += prep_external(BioCyc_info[0]["results"], "BioCyc", "https://biocyc.org/compound?orgid=META&id=%s")
+    external_links += prep_external(pubchem_info[0]["results"], "Pubchem", "https://pubchem.ncbi.nlm.nih.gov/compound/%s")
+    external_links += prep_external(ChemSpider_info[0]["results"], "Chem Spider", "http://www.chemspider.com/Chemical-Structure.%s.html")
+    external_links += prep_external(LipidMaps_info[0]["results"], "Lipid Maps", "http://lipidmaps.org/data/LMSDRecord.php?LMID=%s")
+    external_links += prep_external(DrugBank_info[0]["results"], "Drugbank", "https://www.drugbank.ca/drugs/%s")
 
     return render_template('externallist.html', external_links_json=external_links)
 
