@@ -24,7 +24,7 @@ def npatlasproxyimg():
     NPAID = get_npatlas(smiles, inchi, inchikey)
 
     if NPAID == None:
-        return send_file("./static/img/GNPS_logo.png")
+        return send_file("./static/img/Solid_white.png")
     else:
         return send_file("./static/img/npatlas_logo.png")
 
