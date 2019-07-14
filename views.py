@@ -120,7 +120,7 @@ def gnpslibraryjson():
     return json.dumps(utils.load_GNPS())
 
 @app.route('/gnpslibraryformattedjson', methods=['GET'])
-def gnpslibraryfornpatlasjson():
+def gnpslibraryformattedjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS(), filterKeysOut=False))
 
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
