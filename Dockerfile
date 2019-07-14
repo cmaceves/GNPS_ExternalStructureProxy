@@ -1,16 +1,14 @@
-FROM ubuntu:latest
+FROM mcs07/rdkit:latest
 MAINTAINER Mingxun Wang "mwang87@gmail.com"
 
 RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
+RUN apt-get install -y python3-pip python3-dev build-essential
+RUN apt-get install -y default-jre
 
-RUN pip install flask
-RUN pip install requests
-RUN pip install requests-cache
-RUN pip install gunicorn
-
-RUN apt-get update -y
+RUN pip3 install flask
+RUN pip3 install gunicorn
+RUN pip3 install requests
+RUN pip3 install requests_cache
 
 COPY . /app
-RUN chmod +x /app/run_server.sh
 WORKDIR /app
