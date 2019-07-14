@@ -1,5 +1,5 @@
 # views.py
-from flask import abort, jsonify, render_template, request, redirect, url_for
+from flask import abort, jsonify, render_template, request, redirect, url_for, send_file
 
 from app import app
 
@@ -15,12 +15,36 @@ requests_cache.install_cache('demo_cache')
 def heartbeat():
     return "{'status' : 'up'}"
 
+@app.route('/npatlasproxyimg', methods=['GET'])
+def npatlasproxyimg():
+    inchi = request.args.get('inchi', '')
+    inchikey = request.args.get('inchikey', '')
+    smiles = request.args.get('smiles', '')
+
+    NPAID = get_npatlas(smiles, inchi, inchikey)
+
+    if NPAID == None:
+        return send_file("./static/img/GNPS_logo.png")
+    else:
+        return send_file("./static/img/npatlas_logo.png")
+
 @app.route('/npatlasproxy', methods=['GET'])
 def npatlasproxy():
     inchi = request.args.get('inchi', '')
     inchikey = request.args.get('inchikey', '')
     smiles = request.args.get('smiles', '')
 
+    NPAID = get_npatlas(smiles, inchi, inchikey)
+
+    if NPAID == None:
+        #return render_template("notfound.html")
+        url = "https://www.npatlas.org/joomla/index.php/deposit"
+        return redirect(url)
+    else:
+        url = "https://www.npatlas.org/joomla/index.php/explore/compounds#npaid=%s" % NPAID
+        return redirect(url)
+
+def get_npatlas(smiles, inchi, inchikey):
     inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
     print(inchikey_from_smiles, inchikey_from_inchi)
     acceptable_key = set([inchikey.split("-")[0], inchikey_from_smiles.split("-")[0], inchikey_from_inchi.split("-")[0]])
@@ -32,11 +56,8 @@ def npatlasproxy():
             NPAID = npatlas_entry["NPAID"]
             break
 
-    if NPAID == None:
-        return render_template("notfound.html")
-    else:
-        url = "http://www.npatlas.org/joomla/index.php/explore/compounds#npaid=%s" % NPAID
-        return redirect(url)
+    return NPAID
+
 
 # @app.route('/gnpsproxy', methods=['GET'])
 # def gnpsproxy():
@@ -60,18 +81,6 @@ def npatlasproxy():
 
 #     return render_template('gnpsspectralist.html', spectrumlist_json=found_spectrum_list)
 #     #return json.dumps(found_spectrum_list)
-
-def prep_external(results_list, resource_name, resource_url):
-    external_links = []
-
-    for result in results_list:
-        external_obj = {}
-        external_obj["resource"] = resource_name
-        external_obj["url"] = resource_url % (result)
-
-        external_links.append(external_obj)
-
-    return external_links
 
 @app.route('/structureproxy', methods=['GET'])
 def structureproxy():
@@ -115,6 +124,19 @@ def structureproxy():
     return render_template('externallist.html', external_links_json=external_links)
 
 
+def prep_external(results_list, resource_name, resource_url):
+    external_links = []
+
+    for result in results_list:
+        external_obj = {}
+        external_obj["resource"] = resource_name
+        external_obj["url"] = resource_url % (result)
+
+        external_links.append(external_obj)
+
+    return external_links
+
+#Making it easy to query for all of GNPS library spectra
 @app.route('/gnpslibraryjson', methods=['GET'])
 def gnpslibraryjson():
     return json.dumps(utils.load_GNPS())
