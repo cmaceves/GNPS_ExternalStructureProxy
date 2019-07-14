@@ -3,14 +3,13 @@ from flask import abort, jsonify, render_template, request, redirect, url_for
 
 from app import app
 
-from rdkit import Chem
 import json
 import csv
 import requests
 import requests_cache
+import utils
 
 requests_cache.install_cache('demo_cache')
-
 
 @app.route('/heartbeat', methods=['GET'])
 def heartbeat():
@@ -22,7 +21,7 @@ def npatlasproxy():
     inchikey = request.args.get('inchikey', '')
     smiles = request.args.get('smiles', '')
 
-    inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+    inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
     print(inchikey_from_smiles, inchikey_from_inchi)
     acceptable_key = set([inchikey.split("-")[0], inchikey_from_smiles.split("-")[0], inchikey_from_inchi.split("-")[0]])
 
@@ -80,11 +79,9 @@ def structureproxy():
     inchikey = request.args.get('inchikey', '')
     smiles = request.args.get('smiles', '')
 
-    inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+    inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
 
     inchikey_query = ""
-
-
     MIN_LENGTH = 5
 
     if len(inchikey) > MIN_LENGTH:
@@ -118,67 +115,12 @@ def structureproxy():
     return render_template('externallist.html', external_links_json=external_links)
 
 
-def get_inchikey(smiles, inchi):
-    inchikey_from_smiles = ""
-    inchikey_from_inchi = ""
-    try:
-        inchikey_from_smiles = Chem.MolToInchiKey(Chem.MolFromSmiles(smiles))
-    except:
-        inchikey_from_smiles = ""
+@app.route('/gnpslibraryjson', methods=['GET'])
+def gnpslibraryjson():
+    return json.dumps(utils.load_GNPS())
 
-    try:
-        inchikey_from_inchi = Chem.InchiToInchiKey(inchi)
-    except:
-        inchikey_from_inchi = ""
+@app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
+def gnpslibraryfornpatlasjson():
+    return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))
 
-    if len(inchikey_from_smiles) > 2 and len(inchikey_from_inchi) > 2:
-        return inchikey_from_smiles, inchikey_from_inchi
-
-    if len(inchikey_from_smiles) > 2:
-        return inchikey_from_smiles, ""
-
-    if len(inchikey_from_inchi) > 2:
-        return inchikey_from_inchi, ""
-
-    return "", ""
-
-def load_NPAtlas(filepath):
-    print("Loading NPAtlas")
-    all_npatlas = json.load(open(filepath, encoding='utf-8', errors='strict'), strict=False)
-    print(len(all_npatlas))
-    return all_npatlas
-
-# def load_GNPS():
-#     library_names = ["all", "MASSBANK", "MASSBANKEU", "MONA", "RESPECT", "HMDB", "CASMI"]
-
-#     all_GNPS_list = []
-
-#     for library_name in library_names:
-#         print(library_name)
-#         url = "https://gnps.ucsd.edu/ProteoSAFe/LibraryServlet?library=%s" % (library_name)
-#         all_GNPS_list += requests.get(url).json()["spectra"]
-
-#     all_spectra = []
-#     for spectrum in all_GNPS_list:
-#         smiles = spectrum["Smiles"]
-#         inchi =  spectrum["INCHI"]
-#         inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
-
-#         spectrum_object = {}
-#         spectrum_object["Name"] = spectrum["Compound_Name"]
-#         spectrum_object["InChI"] = spectrum["INCHI"]
-#         spectrum_object["SMILES"] = spectrum["Smiles"]
-#         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
-#         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
-#         spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
-#         spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]
-
-#         all_spectra.append(spectrum_object)
-
-#     return all_spectra
-
-
-#gnps_list = load_GNPS()
-gnps_list = []
-
-npatlas_list = load_NPAtlas("data/npatlas.json")
+npatlas_list = utils.load_NPAtlas("data/npatlas.json")
