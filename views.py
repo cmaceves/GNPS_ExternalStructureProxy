@@ -119,6 +119,10 @@ def structureproxy():
 def gnpslibraryjson():
     return json.dumps(utils.load_GNPS())
 
+@app.route('/gnpslibraryformattedjson', methods=['GET'])
+def gnpslibraryfornpatlasjson():
+    return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS(), filterKeysOut=False))
+
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
 def gnpslibraryfornpatlasjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))

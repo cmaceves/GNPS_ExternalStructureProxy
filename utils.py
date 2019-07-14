@@ -63,12 +63,12 @@ def load_GNPS():
 
     return all_spectra
 
-def gnps_filter_for_key(spectra_list):
+def gnps_filter_for_key(spectra_list, filterKeysOut=True):
     data_list = load_GNPS()
 
     new_data_list = []
     for element in data_list:
-        if len(element["InChIKey_inchi"]) < 5 and len(element["InChIKey_smiles"]) < 5:
+        if len(element["InChIKey_inchi"]) < 5 and len(element["InChIKey_smiles"]) < 5 and filterKeysOut:
             continue
         new_data_list.append(element)
 
