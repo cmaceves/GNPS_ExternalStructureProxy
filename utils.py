@@ -57,6 +57,7 @@ def load_GNPS():
         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
         spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
+        spectrum_object["Library_Class"] = spectrum["Library_Class"]
         spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]
 
         all_spectra.append(spectrum_object)
