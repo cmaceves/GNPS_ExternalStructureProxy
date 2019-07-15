@@ -90,8 +90,8 @@ def gnps_filter_for_key(spectra_list, filterKeysOut=True):
         output_dict["GNPSID"] = element["spectrum_id"]
         output_dict["COMPOUND_NAME"] = element["Name"]
         output_dict["COMPOUND_INCHIKEY"] = inchi_key
-        output_dict["COMPOUND_INCHI"] = element["inchi"]
-        output_dict["COMPOUND_SMILES"] = element["smiles"]
+        output_dict["COMPOUND_INCHI"] = element["INCHI"]
+        output_dict["COMPOUND_SMILES"] = element["Smiles"]
         output_dict["LIBRARY_QUALITY"] = element["Library_Class"]
         
         output_list.append(output_dict)
