@@ -9,6 +9,8 @@ RUN pip3 install flask
 RUN pip3 install gunicorn
 RUN pip3 install requests
 RUN pip3 install requests_cache
+RUN pip3 install pandas
+
 
 COPY . /app
 WORKDIR /app

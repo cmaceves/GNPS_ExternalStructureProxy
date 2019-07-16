@@ -44,6 +44,36 @@ def npatlasproxy():
         url = "https://www.npatlas.org/joomla/index.php/explore/compounds#npaid=%s" % NPAID
         return redirect(url)
 
+
+@app.route('/mibigproxyimg', methods=['GET'])
+def mibigproxyimg():
+    inchi = request.args.get('inchi', '')
+    inchikey = request.args.get('inchikey', '')
+    smiles = request.args.get('smiles', '')
+
+    BGCID = get_mibig(smiles, inchi, inchikey)
+
+    if BGCID == None:
+        return send_file("./static/img/Solid_white.png")
+    else:
+        return send_file("./static/img/mibig_logo.png")
+
+@app.route('/mibigproxy', methods=['GET'])
+def mibigproxy():
+    inchi = request.args.get('inchi', '')
+    inchikey = request.args.get('inchikey', '')
+    smiles = request.args.get('smiles', '')
+
+    BGCID = get_mibig(smiles, inchi, inchikey)
+
+    if BGCID == None:
+        return render_template("notfound.html")
+        #url = "https://www.npatlas.org/joomla/index.php/deposit"
+        #return redirect(url)
+    else:
+        url = "https://mibig.secondarymetabolites.org/repository/%s/index.html#r1c1" % BGCID
+        return redirect(url)
+
 def get_npatlas(smiles, inchi, inchikey):
     inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
     print(inchikey_from_smiles, inchikey_from_inchi)
@@ -57,6 +87,20 @@ def get_npatlas(smiles, inchi, inchikey):
             break
 
     return NPAID
+
+def get_mibig(smiles, inchi, inchikey):
+    inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
+    print(inchikey_from_smiles, inchikey_from_inchi)
+    acceptable_key = set([inchikey.split("-")[0], inchikey_from_smiles.split("-")[0], inchikey_from_inchi.split("-")[0]])
+
+    BGCID = None
+
+    for mibig_entry in mibig_list:
+        if len(mibig_entry["COMPOUND_INCHIKEY"]) > 2 and mibig_entry["COMPOUND_INCHIKEY"].split("-")[0] in acceptable_key:
+            BGCID = mibig_entry["BGCID"]
+            break
+
+    return BGCID
 
 
 # @app.route('/gnpsproxy', methods=['GET'])
@@ -150,3 +194,4 @@ def gnpslibraryfornpatlasjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))
 
 npatlas_list = utils.load_NPAtlas("data/npatlas.json")
+mibig_list = utils.load_mibig("data/mibig.csv")

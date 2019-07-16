@@ -1,5 +1,6 @@
 import requests
 import json
+import pandas as pd
 from rdkit import Chem
 
 
@@ -32,6 +33,22 @@ def load_NPAtlas(filepath):
     all_npatlas = json.load(open(filepath, encoding='utf-8', errors='strict'), strict=False)
     print(len(all_npatlas))
     return all_npatlas
+
+def load_mibig(filepath):
+    df = pd.read_csv(filepath, sep=",")
+
+    output_list = []
+    results_list = df.to_dict(orient="records")
+    for result in results_list:
+        inchikey_from_smiles, inchikey_from_inchi = get_inchikey(result["smiles"], "")
+
+        output_dict = {}
+        output_dict["BGCID"] = result["bgc id"]
+        output_dict["COMPOUND_INCHIKEY"] = inchikey_from_smiles
+
+        output_list.append(output_dict)
+
+    return output_list
 
 
 def load_GNPS():
