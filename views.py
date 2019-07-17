@@ -82,7 +82,7 @@ def get_npatlas(smiles, inchi, inchikey):
     NPAID = None
 
     for npatlas_entry in npatlas_list:
-        if len(npatlas_entry["COMPOUND_INCHIKEY"]) > 2 and npatlas_entry["COMPOUND_INCHIKEY"].split("-")[0] in acceptable_key:
+        if len(npatlas_entry["COMPOUND_INCHIKEY"]) > 5 and npatlas_entry["COMPOUND_INCHIKEY"].split("-")[0] in acceptable_key:
             NPAID = npatlas_entry["NPAID"]
             break
 
@@ -90,13 +90,12 @@ def get_npatlas(smiles, inchi, inchikey):
 
 def get_mibig(smiles, inchi, inchikey):
     inchikey_from_smiles, inchikey_from_inchi = utils.get_inchikey(smiles, inchi)
-    print(inchikey_from_smiles, inchikey_from_inchi)
     acceptable_key = set([inchikey.split("-")[0], inchikey_from_smiles.split("-")[0], inchikey_from_inchi.split("-")[0]])
 
     BGCID = None
 
     for mibig_entry in mibig_list:
-        if len(mibig_entry["COMPOUND_INCHIKEY"]) > 2 and mibig_entry["COMPOUND_INCHIKEY"].split("-")[0] in acceptable_key:
+        if len(mibig_entry["COMPOUND_INCHIKEY"]) > 5 and mibig_entry["COMPOUND_INCHIKEY"].split("-")[0] in acceptable_key:
             BGCID = mibig_entry["BGCID"]
             break
 
