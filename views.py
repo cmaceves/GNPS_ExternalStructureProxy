@@ -8,6 +8,7 @@ import csv
 import requests
 import requests_cache
 import utils
+import pandas as pd
 
 requests_cache.install_cache('demo_cache')
 
@@ -116,7 +117,7 @@ def get_mibig(smiles, inchi, inchikey):
 
 #     found_spectrum_list = []
 
-#     for gnps_spectrum in gnps_list:
+#     for gnps_spectrum in gnps_listreturn json.dumps(:
 #         if len(gnps_spectrum["InChIKey_smiles"]) > 2 and gnps_spectrum["InChIKey_smiles"] in acceptable_key:
 #             found_spectrum_list.append(gnps_spectrum)
 #         elif len(gnps_spectrum["InChIKey_inchi"]) > 2 and gnps_spectrum["InChIKey_inchi"] in acceptable_key:
@@ -191,6 +192,12 @@ def gnpslibraryformattedjson():
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
 def gnpslibraryfornpatlasjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))
+
+@app.route('/gnpslibraryfornpatlastsv', methods=['GET'])
+def gnpslibraryfornpatlastsv():
+    pd.DataFrame(utils.gnps_filter_for_key(utils.load_GNPS())).to_csv("gnpsstructures.tsv", sep="\t", index=False)
+    return send_file("gnpsstructures.tsv")
+
 
 npatlas_list = utils.load_NPAtlas("data/npatlas.json")
 mibig_list = utils.load_mibig("data/mibig.csv")
