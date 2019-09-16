@@ -1,5 +1,6 @@
 import requests
 import json
+import sys
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
@@ -8,12 +9,18 @@ def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
     inchikey_from_inchi = ""
     try:
-        inchikey_from_smiles = str(Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)))
+        if len(smiles) > 5:
+            inchikey_from_smiles = str(Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)))
+        else:
+            inchikey_from_smiles = ""
     except:
         inchikey_from_smiles = ""
 
     try:
-        inchikey_from_inchi = str(Chem.InchiToInchiKey(inchi))
+        if len(inchi) > 5:
+            inchikey_from_inchi = str(Chem.InchiToInchiKey(inchi))
+        else:
+            inchikey_from_inchi = ""
     except:
         inchikey_from_inchi = ""
 
@@ -32,12 +39,18 @@ def get_formula(smiles, inchi):
     formula_from_smiles = ""
     formula_from_inchi = ""
     try:
-        formula_from_smiles = str(CalcMolFormula(Chem.MolFromSmiles(smiles)))
+        if len(smiles) > 5:
+            formula_from_smiles = str(CalcMolFormula(Chem.MolFromSmiles(smiles)))
+        else:
+            formula_from_smiles = ""
     except:
         formula_from_smiles = ""
 
     try:
-        formula_from_inchi = str(CalcMolFormula(Chem.MolFromInchi(inchi)))
+        if len(inchi) > 5:
+            formula_from_inchi = str(CalcMolFormula(Chem.MolFromInchi(inchi)))
+        else:
+            formula_from_inchi = ""
     except:
         formula_from_inchi = ""
 
@@ -87,7 +100,10 @@ def load_GNPS():
         all_GNPS_list += requests.get(url).json()["spectra"]
 
     all_spectra = []
-    for spectrum in all_GNPS_list:
+    for i, spectrum in enumerate(all_GNPS_list):
+        if i % 1000 == 0:
+            print(i, "of", len(all_GNPS_list), file=sys.stderr)
+
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
 
@@ -97,6 +113,9 @@ def load_GNPS():
             formula_from_smiles = ""
             formula_from_inchi = ""
         else:
+            if "InChI=" not in inchi and len(inchi) > 10:
+                inchi = "InChI=" + inchi
+
             inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
             formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
 
