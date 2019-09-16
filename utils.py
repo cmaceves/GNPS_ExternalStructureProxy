@@ -2,7 +2,7 @@ import requests
 import json
 import pandas as pd
 from rdkit import Chem
-
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
 def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
@@ -27,6 +27,31 @@ def get_inchikey(smiles, inchi):
         return inchikey_from_inchi, ""
 
     return "", ""
+
+def get_formula(smiles, inchi):
+    formula_from_smiles = ""
+    formula_from_inchi = ""
+    try:
+        formula_from_smiles = str(CalcMolFormula(Chem.MolFromSmiles(smiles)))
+    except:
+        formula_from_smiles = ""
+
+    try:
+        formula_from_inchi = str(CalcMolFormula(Chem.MolFromInchi(inchi)))
+    except:
+        formula_from_inchi = ""
+
+    if len(formula_from_smiles) > 2 and len(formula_from_inchi) > 2:
+        return formula_from_smiles, formula_from_inchi
+
+    if len(formula_from_smiles) > 2:
+        return formula_from_smiles, ""
+
+    if len(formula_from_inchi) > 2:
+        return formula_from_inchi, ""
+
+    return "", ""
+
 
 def load_NPAtlas(filepath):
     print("Loading NPAtlas")
@@ -66,6 +91,7 @@ def load_GNPS():
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
         inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+        formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
 
         spectrum_object = {}
         spectrum_object["Name"] = spectrum["Compound_Name"]
@@ -73,6 +99,8 @@ def load_GNPS():
         spectrum_object["SMILES"] = spectrum["Smiles"]
         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
+        spectrum_object["Formula_smiles"] = formula_from_smiles
+        spectrum_object["Formula_inchi"] = formula_from_inchi
         spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
         spectrum_object["Library_Class"] = spectrum["Library_Class"]
         spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]
