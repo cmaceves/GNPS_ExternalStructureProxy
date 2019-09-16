@@ -90,8 +90,15 @@ def load_GNPS():
     for spectrum in all_GNPS_list:
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
-        inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
-        formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
+
+        if len(smiles) < 5 and len(inchi) < 5:
+            inchikey_from_smiles = ""
+            inchikey_from_inchi = ""
+            formula_from_smiles = ""
+            formula_from_inchi = ""
+        else:
+            inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+            formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
 
         spectrum_object = {}
         spectrum_object["Name"] = spectrum["Compound_Name"]
