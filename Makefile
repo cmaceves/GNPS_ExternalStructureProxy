@@ -12,3 +12,16 @@ dev-server:
 
 bash:
 	docker run --rm -it -p 5010:5000 --rm --name externalstructureproxy externalstructureproxy bash
+
+
+server-compose:
+	docker-compose build
+	docker-compose up -d
+
+server-compose-interactive:
+	docker-compose build
+	docker-compose up -d
+
+server-compose-production:
+	docker-compose build
+	docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
