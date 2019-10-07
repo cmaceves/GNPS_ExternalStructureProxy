@@ -1,19 +1,26 @@
 import requests
 import json
+import sys
 import pandas as pd
 from rdkit import Chem
-
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
 def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
     inchikey_from_inchi = ""
     try:
-        inchikey_from_smiles = str(Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)))
+        if len(smiles) > 5:
+            inchikey_from_smiles = str(Chem.MolToInchiKey(Chem.MolFromSmiles(smiles)))
+        else:
+            inchikey_from_smiles = ""
     except:
         inchikey_from_smiles = ""
 
     try:
-        inchikey_from_inchi = str(Chem.InchiToInchiKey(inchi))
+        if len(inchi) > 5:
+            inchikey_from_inchi = str(Chem.InchiToInchiKey(inchi))
+        else:
+            inchikey_from_inchi = ""
     except:
         inchikey_from_inchi = ""
 
@@ -27,6 +34,37 @@ def get_inchikey(smiles, inchi):
         return inchikey_from_inchi, ""
 
     return "", ""
+
+def get_formula(smiles, inchi):
+    formula_from_smiles = ""
+    formula_from_inchi = ""
+    try:
+        if len(smiles) > 5:
+            formula_from_smiles = str(CalcMolFormula(Chem.MolFromSmiles(smiles)))
+        else:
+            formula_from_smiles = ""
+    except:
+        formula_from_smiles = ""
+
+    try:
+        if len(inchi) > 5:
+            formula_from_inchi = str(CalcMolFormula(Chem.MolFromInchi(inchi)))
+        else:
+            formula_from_inchi = ""
+    except:
+        formula_from_inchi = ""
+
+    if len(formula_from_smiles) > 2 and len(formula_from_inchi) > 2:
+        return formula_from_smiles, formula_from_inchi
+
+    if len(formula_from_smiles) > 2:
+        return formula_from_smiles, ""
+
+    if len(formula_from_inchi) > 2:
+        return formula_from_inchi, ""
+
+    return "", ""
+
 
 def load_NPAtlas(filepath):
     print("Loading NPAtlas")
@@ -62,10 +100,24 @@ def load_GNPS():
         all_GNPS_list += requests.get(url).json()["spectra"]
 
     all_spectra = []
-    for spectrum in all_GNPS_list:
+    for i, spectrum in enumerate(all_GNPS_list):
+        if i % 1000 == 0:
+            print(i, "of", len(all_GNPS_list), file=sys.stderr)
+
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
-        inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+
+        if len(smiles) < 5 and len(inchi) < 5:
+            inchikey_from_smiles = ""
+            inchikey_from_inchi = ""
+            formula_from_smiles = ""
+            formula_from_inchi = ""
+        else:
+            if "InChI=" not in inchi and len(inchi) > 10:
+                inchi = "InChI=" + inchi
+
+            inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
+            formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
 
         spectrum_object = {}
         spectrum_object["Name"] = spectrum["Compound_Name"]
@@ -73,6 +125,8 @@ def load_GNPS():
         spectrum_object["SMILES"] = spectrum["Smiles"]
         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
+        spectrum_object["Formula_smiles"] = formula_from_smiles
+        spectrum_object["Formula_inchi"] = formula_from_inchi
         spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
         spectrum_object["Library_Class"] = spectrum["Library_Class"]
         spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]

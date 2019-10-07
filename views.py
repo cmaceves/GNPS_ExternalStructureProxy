@@ -38,7 +38,6 @@ def npatlasproxy():
     NPAID = get_npatlas(smiles, inchi, inchikey)
 
     if NPAID == None:
-        #return render_template("notfound.html")
         url = "https://www.npatlas.org/joomla/index.php/deposit"
         return redirect(url)
     else:
@@ -69,8 +68,6 @@ def mibigproxy():
 
     if BGCID == None:
         return render_template("notfound.html")
-        #url = "https://www.npatlas.org/joomla/index.php/deposit"
-        #return redirect(url)
     else:
         url = "https://mibig.secondarymetabolites.org/repository/%s/index.html#r1c1" % BGCID
         return redirect(url)
@@ -185,10 +182,12 @@ def prep_external(results_list, resource_name, resource_url):
 def gnpslibraryjson():
     return json.dumps(utils.load_GNPS())
 
+#This returns all the spectra
 @app.route('/gnpslibraryformattedjson', methods=['GET'])
 def gnpslibraryformattedjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS(), filterKeysOut=False))
 
+#This returns all the spectra that have a structure
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
 def gnpslibraryfornpatlasjson():
     return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))
