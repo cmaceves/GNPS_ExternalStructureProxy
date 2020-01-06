@@ -177,11 +177,9 @@ def gnps_format_libraries(all_GNPS_list):
     return all_spectra
 
 
-def gnps_filter_for_key(spectra_list, filterKeysOut=True):
-    data_list = load_GNPS()
-
+def gnps_filter_for_key(formatted_spectra_list, filterKeysOut=True):
     new_data_list = []
-    for element in data_list:
+    for element in formatted_spectra_list:
         if len(element["InChIKey_inchi"]) < 5 and len(element["InChIKey_smiles"]) < 5 and filterKeysOut:
             continue
         new_data_list.append(element)
