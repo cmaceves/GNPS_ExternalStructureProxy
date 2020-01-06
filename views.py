@@ -1,5 +1,5 @@
 # views.py
-from flask import abort, jsonify, render_template, request, redirect, url_for, send_file
+from flask import abort, jsonify, render_template, request, redirect, url_for, send_file, send_from_directory
 
 from app import app
 
@@ -194,8 +194,8 @@ def gnpslibraryfornpatlasjson():
 
 @app.route('/gnpslibraryfornpatlastsv', methods=['GET'])
 def gnpslibraryfornpatlastsv():
-    pd.DataFrame(utils.gnps_filter_for_key(utils.load_GNPS())).to_csv("gnpsstructures.tsv", sep="\t", index=False)
-    return send_file("gnpsstructures.tsv")
+    pd.DataFrame(utils.gnps_filter_for_key(utils.load_GNPS())).to_csv("/output/atlas_gnpsstructures.tsv", sep="\t", index=False)
+    return send_from_directory("/output", "atlas_gnpsstructures.tsv")
 
 
 npatlas_list = utils.load_NPAtlas("data/npatlas.json")
