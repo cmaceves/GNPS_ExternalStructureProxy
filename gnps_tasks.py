@@ -7,10 +7,8 @@ import utils
 celery_instance = Celery('tasks', backend='rpc://externalstructureproxy-rabbitmq', broker='pyamqp://externalstructureproxy-rabbitmq')
 
 @celery_instance.task()
-def generate_gnps_data(script_to_run):
+def generate_gnps_data():
     utils.load_GNPS()
-
-
 
 celery_instance.conf.beat_schedule = {
     "generate_gnps_data": {
