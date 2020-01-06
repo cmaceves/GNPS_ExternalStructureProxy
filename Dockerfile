@@ -11,6 +11,8 @@ RUN pip3 install requests
 RUN pip3 install requests_cache
 RUN pip3 install pandas
 
+RUN pip3 install celery
+RUN pip3 install redis
 
 COPY . /app
 WORKDIR /app
