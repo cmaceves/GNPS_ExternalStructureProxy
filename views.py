@@ -180,22 +180,21 @@ def prep_external(results_list, resource_name, resource_url):
 #Making it easy to query for all of GNPS library spectra
 @app.route('/gnpslibraryjson', methods=['GET'])
 def gnpslibraryjson():
-    return json.dumps(utils.load_GNPS())
+    return send_from_directory("/output", "gnpslibraries.json")
 
 #This returns all the spectra
 @app.route('/gnpslibraryformattedjson', methods=['GET'])
 def gnpslibraryformattedjson():
-    return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS(), filterKeysOut=False))
+    return send_from_directory("/output", "gnpslibraries_all_formated.json")
 
 #This returns all the spectra that have a structure
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
 def gnpslibraryfornpatlasjson():
-    return json.dumps(utils.gnps_filter_for_key(utils.load_GNPS()))
+    return send_from_directory("/output", "gnpslibraries_withkeys_formated.json")
 
 @app.route('/gnpslibraryfornpatlastsv', methods=['GET'])
 def gnpslibraryfornpatlastsv():
-    pd.DataFrame(utils.gnps_filter_for_key(utils.load_GNPS())).to_csv("/output/atlas_gnpsstructures.tsv", sep="\t", index=False)
-    return send_from_directory("/output", "atlas_gnpsstructures.tsv")
+    return send_from_directory("/output", "gnpslibraries_withkeys_formated.tsv")
 
 
 npatlas_list = utils.load_NPAtlas("data/npatlas.json")
