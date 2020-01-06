@@ -21,7 +21,7 @@ def generate_gnps_data():
     with open("/output/gnpslibraries_all_formated.json", "w") as output_file:
         output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=False)))
 
-    with open("/output/gnpslibraries_withkeys_formated.json", "w") as output_json:
+    with open("/output/gnpslibraries_withkeys_formated.json", "w") as output_file:
         output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=True)))
 
     pd.DataFrame(utils.gnps_filter_for_key(formatted_gnps_libraries)).to_csv("/output/gnpslibraries_withkeys_formated.tsv", sep="\t", index=False)
