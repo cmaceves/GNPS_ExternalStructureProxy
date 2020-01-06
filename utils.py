@@ -135,6 +135,11 @@ def load_GNPS():
         url = "https://gnps.ucsd.edu/ProteoSAFe/LibraryServlet?library=%s" % (library_name)
         all_GNPS_list += requests.get(url).json()["spectra"]
 
+    return all_GNPS_list
+
+    
+
+def gnps_format_libraries(all_GNPS_list):
     all_spectra = []
     for i, spectrum in enumerate(all_GNPS_list):
         if i % 1000 == 0:
@@ -170,6 +175,7 @@ def load_GNPS():
         all_spectra.append(spectrum_object)
 
     return all_spectra
+
 
 def gnps_filter_for_key(spectra_list, filterKeysOut=True):
     data_list = load_GNPS()
