@@ -16,7 +16,7 @@ def generate_gnps_data():
     with open("/output/gnpslibraries.json", "w") as output_file:
         output_file.write(json.dumps(gnps_libraries))
 
-    formatted_gnps_libraries  = utils.gnps_format_libraries(gnps_libraries)
+    formatted_gnps_libraries = utils.gnps_format_libraries(gnps_libraries)
 
     with open("/output/gnpslibraries_all_formated.json", "w") as output_file:
         output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=False)))
