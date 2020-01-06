@@ -16,19 +16,19 @@ def generate_gnps_data():
     with open("/output/gnpslibraries.json", "w") as output_file:
         output_file.write(json.dumps(gnps_libraries))
 
-    # formatted_gnps_libraries  = utils.gnps_format_libraries(gnps_libraries)
+    formatted_gnps_libraries  = utils.gnps_format_libraries(gnps_libraries)
 
-    # with open("/output/gnpslibraries_all_formated.json", "w") as output_file:
-    #     output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=False)))
+    with open("/output/gnpslibraries_all_formated.json", "w") as output_file:
+        output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=False)))
 
-    # with open("/output/gnpslibraries_withkeys_formated.json", "w") as output_json:
-    #     output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=True)))
+    with open("/output/gnpslibraries_withkeys_formated.json", "w") as output_json:
+        output_file.write(json.dumps(utils.gnps_filter_for_key(formatted_gnps_libraries, filterKeysOut=True)))
 
-    # pd.DataFrame(utils.gnps_filter_for_key(formatted_gnps_libraries)).to_csv("/output/gnpslibraries_withkeys_formated.tsv", sep="\t", index=False)
+    pd.DataFrame(utils.gnps_filter_for_key(formatted_gnps_libraries)).to_csv("/output/gnpslibraries_withkeys_formated.tsv", sep="\t", index=False)
 
 celery_instance.conf.beat_schedule = {
     "generate_gnps_data": {
         "task": "gnps_tasks.generate_gnps_data",
-        "schedule": 30.0
+        "schedule": 86400.0
     }
 }
