@@ -5,6 +5,10 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
+## Caching Results for a specific amount of time
+import requests_cache
+requests_cache.install_cache('requests_cache', expire_after=86400)
+
 def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
     inchikey_from_inchi = ""
@@ -91,8 +95,8 @@ def load_mibig(filepath):
 
 def load_GNPS():
     library_names = ["GNPS-LIBRARY", 
-    "GNPS-SELLECKCHEM-FDA-PART1", 
-    "GNPS-SELLECKCHEM-FDA-PART2", 
+    "GNPS-SELLECKCHEM-FDA-PART1",
+    "GNPS-SELLECKCHEM-FDA-PART2",
     "GNPS-PRESTWICKPHYTOCHEM", 
     "GNPS-NIH-CLINICALCOLLECTION1", 
     "GNPS-NIH-CLINICALCOLLECTION2", 
@@ -110,7 +114,7 @@ def load_GNPS():
     "LDB_NEGATIVE",
     "GNPS-NIST14-MATCHES",
     "GNPS-COLLECTIONS-MISC",
-    "GNPS-MSMLS", 
+    "GNPS-MSMLS",
     "BILELIB19",
     "DEREPLICATOR_IDENTIFIED_LIBRARY",
     "PNNL-LIPIDS-POSITIVE",
