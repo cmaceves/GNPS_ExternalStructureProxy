@@ -11,6 +11,8 @@ celery_instance = Celery('tasks', backend='rpc://externalstructureproxy-rabbitmq
 def generate_gnps_data():
     libraries_json = utils.load_GNPS()
 
+    print("Got all Libraries")
+    
     with open("/output/gnpslibraries.json", "w") as output_file:
         output_file.write(json.dumps(libraries_json))
 
