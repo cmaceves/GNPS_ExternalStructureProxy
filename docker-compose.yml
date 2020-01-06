@@ -3,6 +3,30 @@ version: '3'
 services:
   externalstructureproxy:
     build: .
+    volumes:
+      - ./output:/output:rw
     ports:
       - "5010:5000"
     command: /app/run_production_server.sh
+
+  externalstructureproxy-beat1:
+    build: .
+    container_name: externalstructureproxy-beat1
+    volumes:
+        - ./output:/output:rw
+    networks:
+      - default
+    restart: unless-stopped
+    command: /app/run_beat.sh
+    depends_on: 
+      - externalstructureproxy-rabbitmq
+
+  externalstructureproxy-rabbitmq:
+    image: rabbitmq:latest
+    networks:
+      - default
+
+networks:
+  nginx-net:
+    external:
+      name: nginx-net
