@@ -177,6 +177,8 @@ def prep_external(results_list, resource_name, resource_url):
 
     return external_links
 
+### GNPS Spectral Library Delivery Endpoints that will be constantly updated
+
 #Making it easy to query for all of GNPS library spectra
 @app.route('/gnpslibraryjson', methods=['GET'])
 def gnpslibraryjson():

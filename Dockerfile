@@ -1,4 +1,4 @@
-FROM mcs07/rdkit:latest
+FROM mcs07/rdkit:2019.09.1
 MAINTAINER Mingxun Wang "mwang87@gmail.com"
 
 RUN apt-get update -y

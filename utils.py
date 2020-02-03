@@ -9,6 +9,41 @@ from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 import requests_cache
 requests_cache.install_cache('requests_cache', expire_after=86400)
 
+
+library_names = ["GNPS-LIBRARY", 
+    "GNPS-SELLECKCHEM-FDA-PART1",
+    "GNPS-SELLECKCHEM-FDA-PART2",
+    "GNPS-PRESTWICKPHYTOCHEM", 
+    "GNPS-NIH-CLINICALCOLLECTION1", 
+    "GNPS-NIH-CLINICALCOLLECTION2", 
+    "GNPS-NIH-NATURALPRODUCTSLIBRARY", 
+    "GNPS-NIH-NATURALPRODUCTSLIBRARY_ROUND2_POSITIVE", 
+    "GNPS-NIH-NATURALPRODUCTSLIBRARY_ROUND2_NEGATIVE", 
+    "GNPS-NIH-SMALLMOLECULEPHARMACOLOGICALLYACTIVE", 
+    "GNPS-FAULKNERLEGACY",
+    "GNPS-EMBL-MCF",
+    "GNPS-COLLECTIONS-PESTICIDES-POSITIVE",
+    "GNPS-COLLECTIONS-PESTICIDES-NEGATIVE",
+    "MMV_POSITIVE",
+    "MMV_NEGATIVE",
+    "LDB_POSITIVE", 
+    "LDB_NEGATIVE",
+    "GNPS-NIST14-MATCHES",
+    "GNPS-COLLECTIONS-MISC",
+    "GNPS-MSMLS",
+    "BILELIB19",
+    "DEREPLICATOR_IDENTIFIED_LIBRARY",
+    "PNNL-LIPIDS-POSITIVE",
+    "PNNL-LIPIDS-NEGATIVE",
+    "MIADB",
+    "MASSBANK", 
+    "MASSBANKEU", 
+    "MONA", 
+    "RESPECT", 
+    "HMDB", 
+    "CASMI",
+    "SUMNER"]
+
 def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
     inchikey_from_inchi = ""
@@ -92,42 +127,8 @@ def load_mibig(filepath):
 
     return output_list
 
-
+# Loads all GNPS libraries from GNPS servers and returns as python objects
 def load_GNPS():
-    library_names = ["GNPS-LIBRARY", 
-    "GNPS-SELLECKCHEM-FDA-PART1",
-    "GNPS-SELLECKCHEM-FDA-PART2",
-    "GNPS-PRESTWICKPHYTOCHEM", 
-    "GNPS-NIH-CLINICALCOLLECTION1", 
-    "GNPS-NIH-CLINICALCOLLECTION2", 
-    "GNPS-NIH-NATURALPRODUCTSLIBRARY", 
-    "GNPS-NIH-NATURALPRODUCTSLIBRARY_ROUND2_POSITIVE", 
-    "GNPS-NIH-NATURALPRODUCTSLIBRARY_ROUND2_NEGATIVE", 
-    "GNPS-NIH-SMALLMOLECULEPHARMACOLOGICALLYACTIVE", 
-    "GNPS-FAULKNERLEGACY",
-    "GNPS-EMBL-MCF",
-    "GNPS-COLLECTIONS-PESTICIDES-POSITIVE",
-    "GNPS-COLLECTIONS-PESTICIDES-NEGATIVE",
-    "MMV_POSITIVE",
-    "MMV_NEGATIVE",
-    "LDB_POSITIVE", 
-    "LDB_NEGATIVE",
-    "GNPS-NIST14-MATCHES",
-    "GNPS-COLLECTIONS-MISC",
-    "GNPS-MSMLS",
-    "BILELIB19",
-    "DEREPLICATOR_IDENTIFIED_LIBRARY",
-    "PNNL-LIPIDS-POSITIVE",
-    "PNNL-LIPIDS-NEGATIVE",
-    "MIADB",
-    "MASSBANK", 
-    "MASSBANKEU", 
-    "MONA", 
-    "RESPECT", 
-    "HMDB", 
-    "CASMI",
-    "SUMNER"]
-
     all_GNPS_list = []
 
     for library_name in library_names:
@@ -138,7 +139,7 @@ def load_GNPS():
     return all_GNPS_list
 
     
-
+# Enriching GNPS Library data with structures and formulas
 def gnps_format_libraries(all_GNPS_list):
     all_spectra = []
     for i, spectrum in enumerate(all_GNPS_list):
@@ -176,7 +177,7 @@ def gnps_format_libraries(all_GNPS_list):
 
     return all_spectra
 
-
+# Reformatting output for NPAtlas
 def gnps_filter_for_key(formatted_spectra_list, filterKeysOut=True):
     new_data_list = []
     for element in formatted_spectra_list:

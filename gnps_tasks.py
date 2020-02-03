@@ -26,6 +26,10 @@ def generate_gnps_data():
 
     pd.DataFrame(utils.gnps_filter_for_key(formatted_gnps_libraries)).to_csv("/output/gnpslibraries_withkeys_formated.tsv", sep="\t", index=False)
 
+    # Creating JSON files for each GNPS Library
+    for library in utils.library_names:
+        print("library")
+
 celery_instance.conf.beat_schedule = {
     "generate_gnps_data": {
         "task": "gnps_tasks.generate_gnps_data",
