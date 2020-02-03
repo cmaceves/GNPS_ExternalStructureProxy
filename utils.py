@@ -10,7 +10,7 @@ import requests_cache
 requests_cache.install_cache('requests_cache', expire_after=86400)
 
 
-library_names = ["GNPS-LIBRARY", 
+LIBRARY_NAMES = ["GNPS-LIBRARY", 
     "GNPS-SELLECKCHEM-FDA-PART1",
     "GNPS-SELLECKCHEM-FDA-PART2",
     "GNPS-PRESTWICKPHYTOCHEM", 
@@ -128,7 +128,7 @@ def load_mibig(filepath):
     return output_list
 
 # Loads all GNPS libraries from GNPS servers and returns as python objects
-def load_GNPS():
+def load_GNPS(library_names=LIBRARY_NAMES):
     all_GNPS_list = []
 
     for library_name in library_names:
@@ -161,16 +161,11 @@ def gnps_format_libraries(all_GNPS_list):
             inchikey_from_smiles, inchikey_from_inchi = get_inchikey(smiles, inchi)
             formula_from_smiles, formula_from_inchi = get_formula(smiles, inchi)
 
-        spectrum_object = {}
-        spectrum_object["Name"] = spectrum["Compound_Name"]
-        spectrum_object["InChI"] = spectrum["INCHI"]
-        spectrum_object["SMILES"] = spectrum["Smiles"]
+        spectrum_object = spectrum
         spectrum_object["InChIKey_smiles"] = inchikey_from_smiles
         spectrum_object["InChIKey_inchi"] = inchikey_from_inchi
         spectrum_object["Formula_smiles"] = formula_from_smiles
         spectrum_object["Formula_inchi"] = formula_from_inchi
-        spectrum_object["spectrum_id"] = spectrum["spectrum_id"]
-        spectrum_object["Library_Class"] = spectrum["Library_Class"]
         spectrum_object["url"] = "https://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=%s" % spectrum["spectrum_id"]
 
         all_spectra.append(spectrum_object)
