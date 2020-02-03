@@ -196,10 +196,10 @@ def gnps_filter_for_key(formatted_spectra_list, filterKeysOut=True):
         
         output_dict = {}
         output_dict["GNPSID"] = element["spectrum_id"]
-        output_dict["COMPOUND_NAME"] = element["Name"]
+        output_dict["COMPOUND_NAME"] = element["Compound_Name"]
         output_dict["COMPOUND_INCHIKEY"] = inchi_key
-        output_dict["COMPOUND_INCHI"] = element["InChI"]
-        output_dict["COMPOUND_SMILES"] = element["SMILES"]
+        output_dict["COMPOUND_INCHI"] = element["INCHI"]
+        output_dict["COMPOUND_SMILES"] = element["Smiles"]
         output_dict["LIBRARY_QUALITY"] = element["Library_Class"]
         
         output_list.append(output_dict)
@@ -208,4 +208,23 @@ def gnps_filter_for_key(formatted_spectra_list, filterKeysOut=True):
 
     return output_list
 
-        
+# Getting all the spectrum peaks for the library spectrum
+def get_gnps_peaks(all_GNPS_list):
+    import copy
+
+    output_list = []
+
+    for i, spectrum in enumerate(all_GNPS_list):
+        if i % 1000 == 0:
+            print(i, "of", len(all_GNPS_list), file=sys.stderr)
+
+        new_spectrum = copy.deepcopy(spectrum)
+
+        spectrum_peaks_url = "https://gnps.ucsd.edu/ProteoSAFe/SpectrumCommentServlet?SpectrumID={}".format(spectrum["spectrum_id"])
+        r = requests.get(spectrum_peaks_url)
+        spectrum_json = r.json()
+        new_spectrum["peaks_json"] = spectrum_json["spectruminfo"]["peaks_json"]
+    
+        output_list.append(new_spectrum)
+
+    return output_list

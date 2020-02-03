@@ -187,16 +187,16 @@ def gnpslibraryjson():
 #This returns all the spectra
 @app.route('/gnpslibraryformattedjson', methods=['GET'])
 def gnpslibraryformattedjson():
-    return send_from_directory("/output", "gnpslibraries_all_formated.json")
+    return send_from_directory("/output", "gnpslibraries_enriched_all.json")
 
 #This returns all the spectra that have a structure
 @app.route('/gnpslibraryfornpatlasjson', methods=['GET'])
 def gnpslibraryfornpatlasjson():
-    return send_from_directory("/output", "gnpslibraries_withkeys_formated.json")
+    return send_from_directory("/output", "gnpslibraries_npatlas.json")
 
 @app.route('/gnpslibraryfornpatlastsv', methods=['GET'])
 def gnpslibraryfornpatlastsv():
-    return send_from_directory("/output", "gnpslibraries_withkeys_formated.tsv")
+    return send_from_directory("/output", "gnpslibraries_npatlas.tsv")
 
 
 npatlas_list = utils.load_NPAtlas("data/npatlas.json")
