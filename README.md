@@ -1,4 +1,4 @@
-# GNPS_ExternalStructureProxy
+# GNPS - External Proxy
 
 ![production-integration](https://github.com/mwang87/GNPS_ExternalStructureProxy/workflows/production-integration/badge.svg)
 
