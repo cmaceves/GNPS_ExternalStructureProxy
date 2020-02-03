@@ -1,5 +1,7 @@
 # GNPS_ExternalStructureProxy
 
+![production-integration](https://github.com/mwang87/GNPS_ExternalStructureProxy/workflows/production-integration/badge.svg)
+
 External Structure Proxy for GNPS. The goal of this software to enable GNPS to link out to other resources as well as provide end points for GNPS to export data. 
 
 ## All GNPS Spectra
