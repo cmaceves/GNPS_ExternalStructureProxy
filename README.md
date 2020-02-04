@@ -7,6 +7,7 @@ External Structure Proxy for GNPS. The goal of this software to enable GNPS to l
 ## All GNPS Spectra
 
 1. https://gnps-external.ucsd.edu/gnpslibraryjson - All Library Spectra in GNPS
+1. https://gnps-external.ucsd.edu/gnpslibraryformattedwithpeaksjson - All Library Spectra in GNPS with Peaks
 1. https://gnps-external.ucsd.edu/gnpslibraryfornpatlasjson - All Library Spectra in GNPS formatted for NPAtlas to consume
 1. https://gnps-external.ucsd.edu/gnpslibraryfornpatlastsv - All Library Spectra in GNPS formatted for NPAtlas to consume
 
