@@ -9,7 +9,6 @@ from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 import requests_cache
 requests_cache.install_cache('requests_cache', expire_after=86400)
 
-
 LIBRARY_NAMES = ["GNPS-LIBRARY", 
     "GNPS-SELLECKCHEM-FDA-PART1",
     "GNPS-SELLECKCHEM-FDA-PART2",
@@ -224,6 +223,7 @@ def get_gnps_peaks(all_GNPS_list):
             r = requests.get(spectrum_peaks_url)
             spectrum_json = r.json()
             new_spectrum["peaks_json"] = spectrum_json["spectruminfo"]["peaks_json"]
+            new_spectrum["annotation_history"] = spectrum_json["annotations"]
         
             output_list.append(new_spectrum)
         except KeyboardInterrupt:
