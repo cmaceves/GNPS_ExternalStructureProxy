@@ -19,6 +19,8 @@ def generate_gnps_data():
 
     encriched_gnps_libraries = utils.gnps_format_libraries(gnps_libraries)
 
+    print("Enriched Libraries")
+
     with open("/output/gnpslibraries_enriched_all.json", "w") as output_file:
         output_file.write(json.dumps(utils.gnps_filter_for_key(encriched_gnps_libraries, filterKeysOut=False)))
 
@@ -28,17 +30,23 @@ def generate_gnps_data():
 
     pd.DataFrame(utils.gnps_filter_for_key(encriched_gnps_libraries)).to_csv("/output/gnpslibraries_npatlas.tsv", sep="\t", index=False)
 
+    print("NPAtlas Export")
+
     # Getting spectrum peaks for each library spectrum
     encriched_gnps_libraries_with_peaks = utils.get_gnps_peaks(encriched_gnps_libraries)
     with open("/output/gnpslibraries_enriched_all_with_peaks.json", "w") as output_file:
         output_file.write(json.dumps(encriched_gnps_libraries_with_peaks))
+
+    print("JSON Peaks Library Export")
 
     # Generating the MGF versions of it
     with open("/output/ALL_GNPS.mgf", "w") as output_file:
         output_file.write(utils.get_full_mgf_string(encriched_gnps_libraries_with_peaks))
     utils.output_all_gnps_individual_libraries(encriched_gnps_libraries_with_peaks, "/output/")
 
-    # Generating the MSP versions of it
+    print("MGF Library Export")
+
+    # TODO: Generating the MSP versions of it
 
 
 

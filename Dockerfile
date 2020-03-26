@@ -13,6 +13,7 @@ RUN pip3 install pandas
 
 RUN pip3 install celery
 RUN pip3 install redis
+RUN pip3 install tqdm
 
 COPY . /app
 WORKDIR /app

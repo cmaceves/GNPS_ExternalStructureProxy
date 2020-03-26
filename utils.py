@@ -44,6 +44,7 @@ LIBRARY_NAMES = ["GNPS-LIBRARY",
     "CASMI",
     "SUMNER"]
 
+
 def get_inchikey(smiles, inchi):
     inchikey_from_smiles = ""
     inchikey_from_inchi = ""
@@ -144,7 +145,7 @@ def gnps_format_libraries(all_GNPS_list):
     all_spectra = []
     for i, spectrum in enumerate(all_GNPS_list):
         if i % 1000 == 0:
-            print(i, "of", len(all_GNPS_list), file=sys.stderr)
+            print("{} of {} Formatting".format(i, len(all_GNPS_list)), file=sys.stderr)
 
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
@@ -211,11 +212,10 @@ def gnps_filter_for_key(formatted_spectra_list, filterKeysOut=True):
 # Getting all the spectrum peaks for the library spectrum
 def get_gnps_peaks(all_GNPS_list):
     import copy
+    from tqdm import tqdm
 
     output_list = []
-    for i, spectrum in enumerate(all_GNPS_list):
-        if i % 1000 == 0:
-            print(i, "of", len(all_GNPS_list), file=sys.stderr)
+    for spectrum in tqdm(all_GNPS_list):
 
         new_spectrum = copy.deepcopy(spectrum)
 
