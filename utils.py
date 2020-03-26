@@ -232,3 +232,57 @@ def get_gnps_peaks(all_GNPS_list):
             continue
 
     return output_list
+
+def get_full_mgf_string(all_json_list):
+    mgf_string_list = []
+
+    for spectrum in all_json_list:
+        mgf_string_list.append(json_object_to_string(spectrum))
+
+    return "\n".join(mgf_string_list)
+
+def json_object_to_string(json_spectrum):
+    print(json_spectrum["SpectrumID"])
+    
+    if int(json_spectrum["Library_Class"]) > 3:
+        print("CHALLENGE OR UNKNOWN CLASS, SKIPPING: " + json_spectrum["Library_Class"] + "\t" + json_spectrum["SpectrumID"])
+        return ""
+    
+    mgf_string = "BEGIN IONS\n"
+    mgf_string += "PEPMASS=" + json_spectrum["Precursor_MZ"] + "\n"
+    mgf_string += "CHARGE=" + json_spectrum["Charge"] + "\n"
+    mgf_string += "MSLEVEL=2" + "\n"
+    mgf_string += "SOURCE_INSTRUMENT=" + json_spectrum["Ion_Source"] + "-" + json_spectrum["Instrument"] + "\n"
+    mgf_string += "FILENAME=" + json_spectrum["source_file"] + "\n"
+    mgf_string += "SEQ=*..*" + "\n"
+    mgf_string += "IONMODE=" + json_spectrum["Ion_Mode"] + "\n"
+    mgf_string += "ORGANISM=" + json_spectrum["library_membership"] + "\n"
+    mgf_string += "NAME=" + json_spectrum["Compound_Name"] + " " + json_spectrum["Adduct"] + "\n"
+    
+    mgf_string += "PI=" + json_spectrum["PI"] + "\n"
+    mgf_string += "DATACOLLECTOR=" + json_spectrum["Data_Collector"] + "\n"
+    mgf_string += "SMILES=" + json_spectrum["Smiles"] + "\n"
+    mgf_string += "INCHI=" + json_spectrum["INCHI"] + "\n"
+    mgf_string += "INCHIAUX=" + json_spectrum["INCHI_AUX"] + "\n"
+    mgf_string += "PUBMED=" + json_spectrum["Pubmed_ID"] + "\n"    
+    mgf_string += "SUBMITUSER=" + json_spectrum["submit_user"] + "\n"
+    
+    
+    mgf_string += "LIBRARYQUALITY=" + json_spectrum["Library_Class"] + "\n"
+    mgf_string += "SPECTRUMID=" + json_spectrum["SpectrumID"] + "\n"
+    mgf_string += "SCANS=" + json_spectrum["scan"] + "\n"
+    
+    peaks_json = json_spectrum["peaks_json"]
+    
+    if len(peaks_json) < 1000000:
+        peaks_object = json.loads(peaks_json)
+        print(len(peaks_object))
+        for peak in peaks_object:
+            if peak[1] > 0:
+                mgf_string += str(peak[0]) + "\t" + str(peak[1]) + "\n"
+    else:
+        print("SKIPPING: " + json_spectrum["SpectrumID"] + " " + str(len(peaks_json)))
+    
+    mgf_string += "END IONS\n\n"
+    
+    return mgf_string

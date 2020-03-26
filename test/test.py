@@ -27,3 +27,7 @@ def test_get_library_peaks():
 
     with open("output_enriched_list_peaks.json", "w") as output_file:
         output_file.write(json.dumps(spectra_list_with_peaks, indent=4))
+
+    mgf_string = utils.get_full_mgf_string(spectra_list_with_peaks)
+    with open("output_library.mgf", "w") as output_file:
+        output_file.write(mgf_string)

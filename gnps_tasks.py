@@ -9,6 +9,7 @@ celery_instance = Celery('tasks', backend='rpc://externalstructureproxy-rabbitmq
 
 @celery_instance.task()
 def generate_gnps_data():
+    # Loading all GNPS Library Spectra, without peaks
     gnps_libraries = utils.load_GNPS()
 
     print("Got all Libraries")
@@ -31,6 +32,13 @@ def generate_gnps_data():
     encriched_gnps_libraries_with_peaks = utils.get_gnps_peaks(encriched_gnps_libraries)
     with open("/output/gnpslibraries_enriched_all_with_peaks.json", "w") as output_file:
         output_file.write(json.dumps(encriched_gnps_libraries_with_peaks))
+
+    # Generating the MGF versions of it
+    
+
+    # Generating the MSP versions of it
+
+
 
 celery_instance.conf.beat_schedule = {
     "generate_gnps_data": {
