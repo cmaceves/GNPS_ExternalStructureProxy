@@ -31,3 +31,5 @@ def test_get_library_peaks():
     mgf_string = utils.get_full_mgf_string(spectra_list_with_peaks)
     with open("output_library.mgf", "w") as output_file:
         output_file.write(mgf_string)
+
+    utils.output_all_gnps_individual_libraries(spectra_list_with_peaks, ".")

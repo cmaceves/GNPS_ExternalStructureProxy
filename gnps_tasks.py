@@ -34,7 +34,9 @@ def generate_gnps_data():
         output_file.write(json.dumps(encriched_gnps_libraries_with_peaks))
 
     # Generating the MGF versions of it
-    
+    with open("/output/ALL_GNPS.mgf", "w") as output_file:
+        output_file.write(utils.get_full_mgf_string(encriched_gnps_libraries_with_peaks))
+    utils.output_all_gnps_individual_libraries(encriched_gnps_libraries_with_peaks, "/output/")
 
     # Generating the MSP versions of it
 

@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 import sys
 import pandas as pd
 from rdkit import Chem
@@ -233,6 +234,13 @@ def get_gnps_peaks(all_GNPS_list):
 
     return output_list
 
+# Utils for outputting GNPS libraries
+def output_all_gnps_individual_libraries(all_json_list, output_folder):
+    for library in LIBRARY_NAMES:
+        library_spectra_list = [spectrum for spectrum in all_json_list if spectrum["library_membership"] == library]
+        with open(os.path.join(output_folder, "{}.mgf".format(library)), "w") as output_file:
+            output_file.write(get_full_mgf_string(library_spectra_list))
+
 def get_full_mgf_string(all_json_list):
     mgf_string_list = []
 
@@ -276,7 +284,6 @@ def json_object_to_string(json_spectrum):
     
     if len(peaks_json) < 1000000:
         peaks_object = json.loads(peaks_json)
-        print(len(peaks_object))
         for peak in peaks_object:
             if peak[1] > 0:
                 mgf_string += str(peak[0]) + "\t" + str(peak[1]) + "\n"
