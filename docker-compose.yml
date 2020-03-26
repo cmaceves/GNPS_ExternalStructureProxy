@@ -7,7 +7,7 @@ services:
       - ./output:/output:rw
     ports:
       - "5010:5000"
-    command: /app/run_production_server.sh
+    command: /app/run_server.sh
 
   externalstructureproxy-beat1:
     build: .
