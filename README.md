@@ -11,6 +11,10 @@ External Structure Proxy for GNPS. The goal of this software to enable GNPS to l
 1. https://gnps-external.ucsd.edu/gnpslibraryfornpatlasjson - All Library Spectra in GNPS formatted for NPAtlas to consume
 1. https://gnps-external.ucsd.edu/gnpslibraryfornpatlastsv - All Library Spectra in GNPS formatted for NPAtlas to consume
 
+## GNPS Libraries as MGF Files
+
+1. https://gnps-external.ucsd.edu/gnpslibrary/ALL-GNPS.mgf - MGF for ALL GNPS
+1. https://gnps-external.ucsd.edu/gnpslibrary/GNPS-LIBRARY.mgf - MGF for GNPS-LIBRARY
 
 ## Linking out to external services from GNPS
 
