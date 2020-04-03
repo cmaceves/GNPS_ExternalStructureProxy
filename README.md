@@ -13,7 +13,7 @@ External Structure Proxy for GNPS. The goal of this software to enable GNPS to l
 
 ## GNPS Libraries as MGF Files
 
-1. https://gnps-external.ucsd.edu/gnpslibrary/ALL-GNPS.mgf - MGF for ALL GNPS
+1. https://gnps-external.ucsd.edu/gnpslibrary/ALL_GNPS.mgf - MGF for ALL GNPS
 1. https://gnps-external.ucsd.edu/gnpslibrary/GNPS-LIBRARY.mgf - MGF for GNPS-LIBRARY
 
 ## Linking out to external services from GNPS
