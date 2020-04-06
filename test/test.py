@@ -22,8 +22,8 @@ def test():
 
 def test_get_library_peaks():
     import utils
-    #spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])
-    spectra_list = utils.load_GNPS()
+    spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])
+    #spectra_list = utils.load_GNPS()
     spectra_list = utils.gnps_format_libraries(spectra_list)
     spectra_list_with_peaks = utils.get_gnps_peaks(spectra_list)
 
@@ -37,3 +37,8 @@ def test_get_library_peaks():
         output_file.write(mgf_string.encode("ascii", "ignore"))
 
     utils.output_all_gnps_individual_libraries(spectra_list_with_peaks, ".")
+
+    msp_string = utils.get_full_msp_string(spectra_list_with_peaks)
+    with open("ALL_GNPS.msp", "wb") as output_file:
+        output_file.write(msp_string.encode("ascii", "ignore"))
+
