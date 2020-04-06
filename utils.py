@@ -142,10 +142,10 @@ def load_GNPS(library_names=LIBRARY_NAMES):
     
 # Enriching GNPS Library data with structures and formulas
 def gnps_format_libraries(all_GNPS_list):
+    from tqdm import tqdm
+
     all_spectra = []
-    for i, spectrum in enumerate(all_GNPS_list):
-        if i % 1000 == 0:
-            print("{} of {} Formatting".format(i, len(all_GNPS_list)), file=sys.stderr)
+    for spectrum in tqdm(all_GNPS_list):
 
         smiles = spectrum["Smiles"]
         inchi =  spectrum["INCHI"]
