@@ -22,14 +22,14 @@ def test():
 
 def test_get_library_peaks():
     import utils
-    #spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])
-    spectra_list = utils.load_GNPS()
+    spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])
+    #spectra_list = utils.load_GNPS()
     spectra_list = utils.gnps_format_libraries(spectra_list)
     spectra_list_with_peaks = utils.get_gnps_peaks(spectra_list)
 
     print(len(spectra_list_with_peaks))
 
-    with open("output_enriched_list_peaks.json", "w") as output_file:
+    with open("ALL_GNPS.json", "w") as output_file:
         output_file.write(json.dumps(spectra_list_with_peaks, indent=4))
 
     mgf_string = utils.get_full_mgf_string(spectra_list_with_peaks)

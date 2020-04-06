@@ -242,6 +242,10 @@ def output_all_gnps_individual_libraries(all_json_list, output_folder):
             with open(os.path.join(output_folder, "{}.mgf".format(library)), "wb") as output_file:
                 output_file.write(get_full_mgf_string(library_spectra_list).encode("ascii", "ignore"))
 
+        if len(library_spectra_list) > 0:
+            with open(os.path.join(output_folder, "{}.json".format(library)), "w") as output_file:
+                output_file.write(json.dumps(library_spectra_list, indent=4))
+
 def get_full_mgf_string(all_json_list):
     mgf_string_list = []
 
