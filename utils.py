@@ -238,8 +238,9 @@ def get_gnps_peaks(all_GNPS_list):
 def output_all_gnps_individual_libraries(all_json_list, output_folder):
     for library in LIBRARY_NAMES:
         library_spectra_list = [spectrum for spectrum in all_json_list if spectrum["library_membership"] == library]
-        with open(os.path.join(output_folder, "{}.mgf".format(library)), "w") as output_file:
-            output_file.write(get_full_mgf_string(library_spectra_list))
+        if len(library_spectra_list) > 0:
+            with open(os.path.join(output_folder, "{}.mgf".format(library)), "wb") as output_file:
+                output_file.write(get_full_mgf_string(library_spectra_list).encode("ascii", "ignore"))
 
 def get_full_mgf_string(all_json_list):
     mgf_string_list = []
