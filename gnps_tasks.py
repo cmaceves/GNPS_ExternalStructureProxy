@@ -37,16 +37,19 @@ def generate_gnps_data():
     with open("/output/gnpslibraries_enriched_all_with_peaks.json", "w") as output_file:
         output_file.write(json.dumps(encriched_gnps_libraries_with_peaks))
 
-    print("JSON Peaks Library Export")
-
+    print("MGF Library Export")
     # Generating the MGF versions of it
     with open("/output/ALL_GNPS.mgf", "w") as output_file:
         output_file.write(utils.get_full_mgf_string(encriched_gnps_libraries_with_peaks))
-    utils.output_all_gnps_individual_libraries(encriched_gnps_libraries_with_peaks, "/output/")
 
-    print("MGF Library Export")
-
+    print("MSP Library Export")
     # TODO: Generating the MSP versions of it
+    msp_string = utils.get_full_msp_string(spectra_list_with_peaks)
+    with open("ALL_GNPS.msp", "wb") as output_file:
+        output_file.write(msp_string.encode("ascii", "ignore"))
+
+    print("Indivi Library Export")
+    utils.output_all_gnps_individual_libraries(encriched_gnps_libraries_with_peaks, "/output/")
 
 
 
