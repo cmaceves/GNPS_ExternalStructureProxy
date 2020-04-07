@@ -207,6 +207,10 @@ def gnpslibraryfornpatlastsv():
 def mgf_download(library):
     return send_from_directory("/output", "{}.mgf".format(library))
 
+@app.route('/gnpslibrary/<library>.msp', methods=['GET'])
+def mgf_download(library):
+    return send_from_directory("/output", "{}.msp".format(library))
+
 @app.route('/gnpslibrary/<library>.json', methods=['GET'])
 def json_download(library):
     return send_from_directory("/output", "{}.json".format(library))
