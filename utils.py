@@ -259,7 +259,12 @@ def get_full_msp_string(all_json_list):
     msp_string_list = []
     
     for spectrum in all_json_list:
-        msp_string_list.append(json_to_msp(spectrum))
+        try:
+            msp_string_list.append(json_to_msp(spectrum))
+        except KeyboardInterrupt:
+            raise
+        except:
+            pass
 
     return "\n".join(msp_string_list)
 

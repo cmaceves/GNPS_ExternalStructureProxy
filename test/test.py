@@ -22,7 +22,7 @@ def test_filtered_spectra():
 
 def test_get_library_peaks():
     import utils
-    spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])
+    spectra_list = utils.load_GNPS(library_names=["GNPS-LIBRARY"])[:100]
     spectra_list = utils.gnps_format_libraries(spectra_list)
     spectra_list_with_peaks = utils.get_gnps_peaks(spectra_list)
 
