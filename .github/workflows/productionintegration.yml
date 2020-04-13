@@ -6,8 +6,7 @@ on:
    - cron:  '15 * * * *'
 
 jobs:
-  build:
-
+  production-integration:
     runs-on: ubuntu-latest
 
     steps:

@@ -15,14 +15,20 @@ def test_gnps_library():
 
     url = f"https://{PRODUCTION_URL}/gnpslibraryformattedjson"
     r = requests.get(url)
+    spectra_list = r.json()
+    assert(len(spectra_list) > 10)
     r.raise_for_status()
 
     url = f"https://{PRODUCTION_URL}/gnpslibraryformattedwithpeaksjson"
     r = requests.get(url)
+    spectra_list = r.json()
+    assert(len(spectra_list) > 10)
     r.raise_for_status()
 
     url = f"https://{PRODUCTION_URL}/gnpslibraryfornpatlasjson"
     r = requests.get(url)
+    spectra_list = r.json()
+    assert(len(spectra_list) > 10)
     r.raise_for_status()
 
     url = f"https://{PRODUCTION_URL}/gnpslibraryfornpatlastsv"
